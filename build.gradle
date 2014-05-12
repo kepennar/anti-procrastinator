@@ -1,0 +1,71 @@
+
+buildscript {
+	repositories() {
+		mavenCentral()
+	}
+	dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.0.2.RELEASE"
+        classpath 'com.sourcemuse.gradle.plugin:gradle-mongo-plugin:0.1.0'
+    }
+}
+
+apply plugin: 'mongo'
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+apply plugin: 'spring-boot'
+
+
+jar {
+    baseName = 'aprocrastinator-backend'
+    version =  '0.0.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.2.2'
+
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'    
+    compile 'javax.inject:javax.inject:1'
+
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'info.cukes:cucumber-junit:1.1.5'
+    testCompile 'info.cukes:cucumber-groovy:1.1.5'
+    testCompile 'com.github.groovy-wslite:groovy-wslite:0.8.0'
+    testCompile "org.mongodb:mongo-java-driver:2.12.0"
+}
+
+test.testLogging.exceptionFormat = 'full'
+
+configurations {
+    functTestCompile.extendsFrom testCompile
+    functTestRuntime.extendsFrom testRuntime
+}
+
+sourceSets {
+    functionalTest {
+        groovy.srcDir file('src/testFunctional/groovy')
+        resources.srcDir     file('src/testFunctional/resources')
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.functTestCompile
+        runtimeClasspath = output + compileClasspath + configurations.functTestRuntime
+    }
+}
+
+task functionalTest(type: Test) {
+    testClassesDir = sourceSets.functionalTest.output.classesDir
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    dependsOn startManagedMongoDb, bootRun
+    finalizedBy stopMongoDb
+}
+
+check.dependsOn functionalTest
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}
