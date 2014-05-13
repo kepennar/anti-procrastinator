@@ -1,13 +1,28 @@
 
+
+
 buildscript {
-	repositories() {
-		mavenCentral()
-	}
-	dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.0.2.RELEASE"
+    project.ext["profileName"] = binding.variables.get("profile")
+    if (project.hasProperty('profile')) {
+        project.ext["profileName"] = profile
+    } else {
+        project.ext["profileName"] = 'dev'
+    }
+    println "Profile= ${project.profileName}"
+
+    
+    apply from: "profils/${project.profileName}-profile.gradle"
+    repositories() {
+        project.scriptRepo.each { mvnUrl->
+            maven {url mvnUrl}
+        }
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.0.2.RELEASE'
         classpath 'com.sourcemuse.gradle.plugin:gradle-mongo-plugin:0.1.0'
     }
 }
+
 
 apply plugin: 'mongo'
 apply plugin: 'eclipse'
@@ -21,8 +36,11 @@ jar {
 }
 
 repositories {
-    mavenCentral()
+    project.repo.each { mvnUrl->
+        maven {url mvnUrl}
+    }
 }
+
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.2.2'
@@ -31,6 +49,10 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
+    compile "org.webjars:jquery:2.0.3-1"
+    compile "org.webjars:bootstrap:3.1.1-1"
     
     compile 'javax.inject:javax.inject:1'
 
