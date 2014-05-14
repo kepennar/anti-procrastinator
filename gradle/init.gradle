@@ -1,0 +1,15 @@
+
+	// Nom du profile passé en argument de la ligne de commande du build (ex 'gradle test -Pprofile=mon_profile')
+    project.ext['profileName'] = binding.variables.get('profile')
+    
+    // SI le nom du profile est définie, il est utilisé. Sinon, c'est le profile 'dev' qui est utilisé par défaut
+    if (project.hasProperty('profile')) {
+        project.ext['profileName'] = profile
+    } else {
+        project.ext['profileName'] = 'dev'
+    }
+    println "Profile= ${project.profileName}"
+
+    // Application du script spécifique au profile
+    apply from: "gradle/profils/${project.profileName}-profile.gradle"
+    

@@ -1,0 +1,15 @@
+println "configuring dependencies management for $project"
+
+project.ext {
+	scriptRepo= ["http://repo1.maven.org/maven2/"]
+}
+
+project.ext {
+	repo= ["http://repo1.maven.org/maven2/"]
+}
+
+println "Using dependencies repositories: ${project.scriptRepo}"
+println "Using script : ${project.repo}"
+
+
+//project.applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,address=localhost:9999,server=y,suspend=n"]
