@@ -19,12 +19,10 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.0.2.RELEASE'
-        classpath 'com.sourcemuse.gradle.plugin:gradle-mongo-plugin:0.1.0'
     }
 }
 
 
-apply plugin: 'mongo'
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
@@ -41,6 +39,9 @@ repositories {
     }
 }
 
+// tag::developper_args[]
+applicationDefaultJvmArgs = ["-agentlib:jdwp=transport=dt_socket,address=localhost:9999,server=y,suspend=n"]
+// end::developper_args[]
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.2.2'
@@ -58,10 +59,12 @@ dependencies {
 
     testCompile 'junit:junit:4.11'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'org.spockframework:spock-spring:0.7-groovy-2.0'
     testCompile 'info.cukes:cucumber-junit:1.1.5'
     testCompile 'info.cukes:cucumber-groovy:1.1.5'
     testCompile 'com.github.groovy-wslite:groovy-wslite:0.8.0'
-    testCompile "org.mongodb:mongo-java-driver:2.12.0"
+    testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.45'
+    testCompile 'org.mongodb:mongo-java-driver:2.12.0'
 }
 
 test.testLogging.exceptionFormat = 'full'
@@ -80,14 +83,19 @@ sourceSets {
     }
 }
 
+
+task startServer(type:Exec, dependsOn: 'assemble') {
+    //commandLine "java -jar ${projectDir}/build/libs/${jar.baseName}-${jar.version}.jar"
+    bootRun.dameon= true
+    bootRun.execute()
+}
+
 task functionalTest(type: Test) {
     testClassesDir = sourceSets.functionalTest.output.classesDir
     classpath = sourceSets.functionalTest.runtimeClasspath
-    dependsOn startManagedMongoDb, bootRun
-    finalizedBy stopMongoDb
+    dependsOn startServer
+    //finalizedBy stopMongoDb
 }
-
-check.dependsOn functionalTest
 
 
 task wrapper(type: Wrapper) {
