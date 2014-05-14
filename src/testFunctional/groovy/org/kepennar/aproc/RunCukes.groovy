@@ -1,7 +1,10 @@
 package org.kepennar.aproc
 
-import cucumber.api.junit.Cucumber
 import org.junit.runner.RunWith
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.web.WebAppConfiguration
+
+import cucumber.api.junit.Cucumber
 
 @RunWith(Cucumber)
 @cucumber.api.CucumberOptions(

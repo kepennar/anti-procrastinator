@@ -7,9 +7,10 @@ Scenario: Task WriteTest description by Name
     When a Task is requested with name "WriteTest"
     Then the description is "Writing tests is useful and it can be fun!"
 
-Scenario: Task WriteTest description by Name
+Scenario: Task WriteTest description by Id
     Given a Task named "WriteTest"
-    And the Task "WriteTest" description is "Writing tests is useful and it can be fun!"
-    When a Task is requested with name "WriteTest"
-    Then the description is "Writing tests is useful and it can be fun!"
+    And the Task "WriteTest" Id is "987654321"
+    And the Task "WriteTest" description is "Writing tests is important so do it!"
+    When a Task with name "WriteTest" is requested by id
+    Then the description is "Writing tests is important so do it!"
 

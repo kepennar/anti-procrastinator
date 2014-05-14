@@ -25,12 +25,15 @@ class TaskController {
 	
     @RequestMapping(method=GET, value="name/{name}")
     ResponseEntity byName(@PathVariable String name) {
-		return new ResponseEntity<>(this.repo.findByName(name), OK)
+		
+		return Optional.ofNullable(this.repo.findByName(name))
+			.map({t -> new ResponseEntity<>(t, OK)})
+			.orElse(new ResponseEntity<>(NOT_FOUND));
     }
 
 	
 	@RequestMapping(method=GET, value="{id}")
-	ResponseEntity task(@PathVariable BigInteger id) {
+	ResponseEntity task(@PathVariable String id) {
 
 		return Optional.ofNullable(this.repo.findOne(id))
 			.map({t -> new ResponseEntity<>(t, OK)})
