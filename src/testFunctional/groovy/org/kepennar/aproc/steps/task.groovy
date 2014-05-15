@@ -15,10 +15,7 @@ import com.mongodb.WriteConcern
 def context = SpringApplication.run(Application.class)
 
 Before() {
-	// Start embedded Mongo
-	//MongodForTestsFactory factory = null;
-	//factory = MongodForTestsFactory.with(Version.Main.PRODUCTION);
-	//context = SpringApplication.run(Application.class)
+	
 	// Mongo client
 	def mongo = new MongoClient()
 	mongo.writeConcern = WriteConcern.NORMAL
@@ -55,7 +52,7 @@ When(~'^a Task is requested with name "([^"]*)"$') { String task ->
 	response = client.get(path:"/name/${task}")
 }
 
-When(~'^a Task with name "([^"]*)" is requested by id$') { task ->
+When(~'^a Task with name "([^"]*)" is requested by is id$') { task ->
 	def dbTask = tasks.find(new BasicDBObject("name", task)).next()
 	response = client.get(path:"/${dbTask._id}")
 }

@@ -12,9 +12,10 @@ buildscript {
     }
 }
 
-apply plugin: 'eclipse'
+
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
 
 jar {
     baseName = 'aprocrastinator-backend'
@@ -49,6 +50,7 @@ dependencies {
     testCompile 'org.spockframework:spock-spring:0.7-groovy-2.0'
     testCompile 'info.cukes:cucumber-junit:1.1.5'
     testCompile 'info.cukes:cucumber-groovy:1.1.5'
+	testCompile 'org.assertj:assertj-core:1.6.0'
     testCompile 'com.github.groovy-wslite:groovy-wslite:0.8.0'
     testCompile 'org.mongodb:mongo-java-driver:2.12.0'
 }

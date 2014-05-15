@@ -36,24 +36,24 @@ class MainControllerSpec extends Specification {
 	
 	void "should return HTTP status success"() {
 		when:
-		ResponseEntity entity = new RestTemplate().getForEntity("http://localhost:8088/site", String.class)
+			ResponseEntity entity = new RestTemplate().getForEntity("http://localhost:8088/site", String.class)
 
 		then:
-		entity.statusCode == HttpStatus.OK
+			entity.statusCode == HttpStatus.OK
 	}
 	
 	
 	void "should say hello!"() {
 		when:
-		ResponseEntity<String> entity = new RestTemplate().getForEntity(url, String.class)
+			ResponseEntity<String> entity = new RestTemplate().getForEntity(url, String.class)
 
 		then:
-		entity.statusCode == HttpStatus.OK
-		entity.body == response
+			entity.statusCode == HttpStatus.OK
+			entity.body == response
 
 		where:
-		url                                 	|| response
-		'http://localhost:8088/site/everybody' 	|| 'Hello everybody!'
-		'http://localhost:8088/site/World' 		|| 'Hello World!'
+			url                                 	|| response
+			'http://localhost:8088/site/everybody' 	|| 'Hello everybody!'
+			'http://localhost:8088/site/World' 		|| 'Hello World!'
 	}
 }
