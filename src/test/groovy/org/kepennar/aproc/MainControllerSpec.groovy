@@ -27,7 +27,7 @@ class MainControllerSpec extends Specification {
 					@Override
 					public ConfigurableApplicationContext call() throws Exception {
 						return (ConfigurableApplicationContext) SpringApplication
-								.run(Application.class)
+								.run(Application.class, "-Pspring.profiles.active=test")
 					}
 				})
 		context = future.get(60, TimeUnit.SECONDS)

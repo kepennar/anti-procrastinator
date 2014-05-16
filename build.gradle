@@ -39,12 +39,13 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+	compile 'javax.inject:javax.inject:1'
+	compile 'joda-time:joda-time:2.3'
+	compile 'commons-io:commons-io:2.4'
 
     compile "org.webjars:jquery:2.0.3-1"
     compile "org.webjars:bootstrap:3.1.1-1"
     
-    compile 'javax.inject:javax.inject:1'
-
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'org.spockframework:spock-spring:0.7-groovy-2.0'

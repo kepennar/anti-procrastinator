@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/task")
+@RequestMapping("/api/tasks")
 class TaskController {
 	final TaskRepository repo
 	
@@ -36,6 +36,18 @@ class TaskController {
 	ResponseEntity task(@PathVariable String id) {
 
 		return Optional.ofNullable(this.repo.findOne(id))
+			.map({t -> new ResponseEntity<>(t, OK)})
+			.orElse(new ResponseEntity<>(NOT_FOUND));
+	}
+	
+	
+	@RequestMapping(method=GET, value="{id}/majVersion")
+	ResponseEntity majVersion(@PathVariable String id) {
+		
+		Task task = repo.findOne(id);
+		repo.save(task);
+			
+		return Optional.ofNullable(task)
 			.map({t -> new ResponseEntity<>(t, OK)})
 			.orElse(new ResponseEntity<>(NOT_FOUND));
 	}

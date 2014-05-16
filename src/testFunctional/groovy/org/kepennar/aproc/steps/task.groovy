@@ -12,7 +12,7 @@ import com.mongodb.MongoClient
 import com.mongodb.WriteConcern
 
 
-def context = SpringApplication.run(Application.class)
+def context = SpringApplication.run(Application.class, "-Pspring.profiles.active=test")
 
 Before() {
 	
@@ -21,7 +21,7 @@ Before() {
 	mongo.writeConcern = WriteConcern.NORMAL
 	db = mongo.getDB("aproc")
 	tasks = db.createCollection("task", new BasicDBObject())
-	client = new RESTClient("http://localhost:8088/api/task")
+	client = new RESTClient("http://localhost:8088/api/tasks")
 
 }
 
