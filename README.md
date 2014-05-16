@@ -11,8 +11,7 @@ or
 
 
 #Run unit tests
-gradle test
-
+`gradle test`
 
 #Run functional tests
-gradle clean functionalTest
+`gradle clean functionalTest`
