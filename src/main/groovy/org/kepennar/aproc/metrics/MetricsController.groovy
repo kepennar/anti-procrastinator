@@ -1,4 +1,4 @@
-package org.kepennar.aproc.tasks;
+package org.kepennar.aproc.metrics;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
@@ -11,21 +11,14 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("site/tasks")
-class TaskController {
-	final TaskRepository repo
-	
-	@Inject
-	TaskController(TaskRepository repo) {
-		this.repo = repo
-	}
+@RequestMapping("site/metrics")
+class MetricsController {
 	
     @RequestMapping(method = GET)
     String list(Model model) {
 		
-		model.addAttribute("currentMenu", "tasks");
-		model.addAttribute("tasks", repo.findAll());
-		return "/tasks/tasksList";
+		model.addAttribute("currentMenu", "metrics");
+		return "/metrics/metrics";
     }
 
 }

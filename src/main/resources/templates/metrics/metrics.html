@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+
+<head th:include="fragments/headTag :: headTag"></head>
+<body>
+	<div layout:fragment="content" class="container">
+		<h2>Metrics</h2>
+		<div class="pannel">
+			<canvas id="myChart" width="800px"></canvas>
+		</div>
+		
+		<script src="js/charts.min.js" th:src="@{/js/charts.min.js}"></script>
+		<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+			document.addEventListener('DOMContentLoaded', function(){
+				//Get the context of the canvas element we want to select
+				var ctx = document.getElementById('myChart').getContext('2d');
+				var apiUrl = /*[[@{/api/metrics/usage}]]*/;
+				var data = $.get(apiUrl)
+				  .done(function(data) {
+					  new Chart(ctx).Bar(data, {animationEasing : "easeInOutElastic"});
+				  })
+
+				
+				
+			});
+		/*]]>*/	
+		</script>
+	</div>
+
+</body>
+
+</html>

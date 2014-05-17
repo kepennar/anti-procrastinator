@@ -8,5 +8,5 @@ project.ext {
 	repo= ["http://mouliere.dsi.damgm.i2:8081/nexus/content/groups/public"]
 }
 
-println "Using dependencies repositories: ${project.scriptRepo}"
-println "Using script : ${project.repo}"
+println "Using dependencies repositories: ${project.repo}"
+println "Using script : ${project.scriptRepo}"

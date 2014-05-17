@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="en"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+
+	<head th:replace="fragments/headTag :: headTag"></head>	
+	<body>	
+		<div  layout:fragment="content" class="container">
+		    <h2>Tasks</h2>
+		
+		    <table class="table table-striped">
+		        <thead>
+		            <tr>
+		                <th>Nom</th>
+		                <th>description</th>
+		                <th>Version</th>
+		                <th>Dernière modification</th>
+		                <th >Dernière modification par</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <tr th:each="task : ${tasks}">
+		                <td>
+		                    <a href="taskDetails.html"
+		                       th:href="@{|/tasks/${task.id}|}"
+		                       th:text="|${task.name}|"></a>
+		                </td>
+		                <td th:text="${task.description}">Description</td>
+		                <td th:text="${task.version}">0</td>
+		                <td th:text="${#calendars.format(task.lastModified)}"></td>
+		                <td th:text="${task.lastModifiedBy.name}"></td>
+		            </tr>
+		        </tbody>
+		    </table>
+		</div>		
+	</body>
+
+</html>

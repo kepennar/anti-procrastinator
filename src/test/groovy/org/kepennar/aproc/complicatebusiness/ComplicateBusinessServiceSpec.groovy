@@ -1,4 +1,4 @@
-package org.kepennar.aproc.service;
+package org.kepennar.aproc.complicatebusiness;
 
 import static org.assertj.core.api.Assertions.*
 import static org.assertj.core.groups.FieldsOrPropertiesExtractor.extract

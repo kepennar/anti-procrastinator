@@ -1,5 +1,6 @@
 package org.kepennar.aproc.tasks;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 import org.kepennar.aproc.config.audit.AuditableUser;
 import org.springframework.data.annotation.CreatedBy;
@@ -15,14 +16,17 @@ public class Task {
 	private String id;
 	@Version
 	private Long version;
+	
 	@CreatedDate
     private DateTime createdAt;
+	
     @LastModifiedDate
     private DateTime lastModified;
+    
     @CreatedBy
     private AuditableUser createdBy;
     @LastModifiedBy
-    private String lastModifiedBy;
+    private AuditableUser lastModifiedBy;
 
     
     
@@ -59,10 +63,12 @@ public class Task {
 	}	
 	public void setCreatedBy(AuditableUser createdBy) {
 		this.createdBy = createdBy;
-	}public String getLastModifiedBy() {
+	}
+	
+	public AuditableUser getLastModifiedBy() {
 		return lastModifiedBy;
 	}
-	public void setLastModifiedBy(String lastModifiedBy) {
+	public void setLastModifiedBy(AuditableUser lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 	
@@ -83,8 +89,7 @@ public class Task {
 	}
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", createdAt=" + createdAt + ", lastModified=" + lastModified + ", name=" + name + ", description="
-				+ description + "]";
+		return ToStringBuilder.reflectionToString(this);
 	}
 	
 

@@ -15,9 +15,9 @@ class MainController {
 
 	@RequestMapping(method = GET)
 	String getCurrentMenu(Model model) {
-			model.addAttribute("menuItems", null);
-			return "/home";
-		}
+		model.addAttribute("currentMenu", "");
+		return "/home";
+	}
 	
     @RequestMapping(method=GET, value="{name}")
     @ResponseBody String home(@PathVariable String name) {

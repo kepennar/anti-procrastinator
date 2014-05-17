@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	th:fragment="page">
 
+<head>
+
+</head>
 <body>
 
-	<div th:fragment="head" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> 
+					<span class="icon-bar"></span> <span class="icon-bar"></span> 
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Project name</a>
+				<a class="navbar-brand" href="/site" th:href="@{/site}">Demo</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">Dashboard</a></li>
-					<li><a href="#">Settings</a></li>
-					<li><a href="#">Profile</a></li>
-					<li><a href="#">Help</a></li>
+					<li th:class="${currentMenu == ''} ? 'active'" ><a href="/site" th:href="@{/site}">Home</a></li>
+					<li th:class="${currentMenu == 'tasks'} ? 'active'" ><a href="/site/tasks" th:href="@{/site/tasks}">Tasks</a></li>
+					<li th:class="${currentMenu == 'metrics'} ? 'active'" ><a href="/site/metrics" th:href="@{/site/metrics}">Metrics</a></li>
 				</ul>
 				<form class="navbar-form navbar-right">
 					<input type="text" class="form-control" placeholder="Search..."></input>
@@ -28,40 +32,21 @@ xmlns:th="http://www.thymeleaf.org">
 			</div>
 		</div>
 	</div>
-
-	<div th:fragment="left" class="container-fluid">
-		
-		<div class="row">
-			<div class="col-sm-3 col-md-2 sidebar">
-				<ul class="nav nav-sidebar">
-					<li class="active"><a href="#">Overview</a></li>
-					<li><a href="#">Reports</a></li>
-					<li><a href="#">Analytics</a></li>
-					<li><a href="#">Export</a></li>
-				</ul>
-				<ul class="nav nav-sidebar">
-					<li><a href="">Nav item</a></li>
-					<li><a href="">Nav item again</a></li>
-					<li><a href="">One more nav</a></li>
-					<li><a href="">Another nav item</a></li>
-					<li><a href="">More navigation</a></li>
-				</ul>
-				<ul class="nav nav-sidebar">
-					<li><a href="">Nav item again</a></li>
-					<li><a href="">One more nav</a></li>
-					<li><a href="">Another nav item</a></li>
-				</ul>
-			</div>
+	<div class="container" role="main">
+		<div layout:fragment="content"></div>
+	</div>
+	<div class="sticky-footer">
+		<div class="container">
+			<p th:text="${#calendars.format(date)}"></p>
+			<a href="https://twitter.com/kepennar" class="twitter-follow-button"
+				data-show-screen-name="false" data-show-count="false" data-lang="en">@kePennar</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 		</div>
 	</div>
 
-	<div th:fragment="foot">
-		<footer>
-			<p>@kePennar</p>
-		</footer>
-	</div>
 
-	<script src="webjars/jquery/2.0.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js" 
+	th:src="@{/webjars/jquery/2.1.0/jquery.min.js}"></script>
 </body>
 
 </html>

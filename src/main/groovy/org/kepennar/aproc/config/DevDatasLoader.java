@@ -1,8 +1,7 @@
 package org.kepennar.aproc.config;
 
 import static org.apache.commons.io.IOUtils.toByteArray;
-import static org.joda.time.DateTime.now;
-import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,15 +35,8 @@ public class DevDatasLoader implements InitializingBean {
 		String sampleDatas = new String(toByteArray(ClassLoader.getSystemResourceAsStream("sample-datas/tasks.json")));
 		
 		List<Task> tasks = new ObjectMapper().readValue(sampleDatas, new TypeReference<List<Task>>(){});
-		List<Task> enrichedTasks = tasks.stream()
-			.map(t -> {
-				t.setCreatedAt(now());
-				return t;
-			})
-		.collect(toList());
-		
-		taskRepository.save(enrichedTasks);
-		LOG.debug("{} sample tasks saved in DB", enrichedTasks.size());
+		taskRepository.save(tasks);
+		LOG.debug("{} sample tasks saved in DB", tasks.size());
 		
 	}
 }
