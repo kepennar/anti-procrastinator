@@ -44,7 +44,7 @@ class MainControllerSpec extends Specification {
 
 		where:
 			url                                 	|| response
-			'http://localhost:8088/site/everybody' 	|| 'Hello everybody!'
-			'http://localhost:8088/site/World' 		|| 'Hello World!'
+			'http://localhost:8888/site/everybody' 	|| 'Hello everybody!'
+			'http://localhost:8888/site/World' 		|| 'Hello World!'
 	}
 }

@@ -1,7 +1,8 @@
 package org.kepennar.aproc.complicatebusiness;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -23,13 +24,9 @@ public class ComplicateBusinessService {
 	public List<Task> getAllTransformedTasks() {
 		return taskRepository.findAll().parallelStream()
 			.map(t -> {
-				Task transformTask = new Task();
-				transformTask.setName(sort(t.getName()));
-				transformTask.setDescription(sort(t.getDescription()));
-				
-				return transformTask;
+				return new Task(sort(t.getName()), sort(t.getDescription()));
 			})
-			.collect(Collectors.toList());
+			.collect(toList());
 		
 	}
 	
