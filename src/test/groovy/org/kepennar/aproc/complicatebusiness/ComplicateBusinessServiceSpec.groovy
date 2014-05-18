@@ -38,12 +38,10 @@ public class ComplicateBusinessServiceSpec extends Specification {
 	[
 		new Task(name:"aaaeee", description:"aabbe"),
 		new Task(name:"eeefff", description:"iiuuu")
-	]
-	
+	]	
 	
 	void "should return Tasks with ordered fields"() {
-		
-		
+				
 		TaskRepository repo = Mock()
 		ComplicateBusinessService service = new ComplicateBusinessService(repo)
 		
@@ -54,12 +52,6 @@ public class ComplicateBusinessServiceSpec extends Specification {
 			List<Task> transformedTask = service.getAllTransformedTasks()
 
 		then:
-//			def expectedNames = extract("name", expectedTask)
-//			def expectedDescription = extract("description", expectedTask)
-//			
-//			def obtainNames = extract("name", transformedTask)
-//			def obtainDescription = extract("description", transformedTask)
-//			
 			assertThat(transformedTask).usingFieldByFieldElementComparator().containsExactlyElementsOf(expectedTask)
 			
 		where:

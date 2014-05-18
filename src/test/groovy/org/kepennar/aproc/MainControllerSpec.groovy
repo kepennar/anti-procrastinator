@@ -21,7 +21,6 @@ class MainControllerSpec extends Specification {
 	ConfigurableApplicationContext context
 
 	void setupSpec() {
-		
 		context = (ConfigurableApplicationContext) SpringApplication.run(Application.class, "spring.profiles.active=test")
 	}
 
