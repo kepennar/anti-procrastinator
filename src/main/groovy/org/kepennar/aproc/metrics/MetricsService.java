@@ -1,8 +1,10 @@
 package org.kepennar.aproc.metrics;
-
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -18,10 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class MetricsService {
 	private final MetricRepository repo;
+	
 	private Function<org.springframework.boot.actuate.metrics.Metric<?>, Metric> toMetric = m -> {
 		String name = m.getName().substring(15);
-		return new Metric(name, m.getValue());
+		return new Metric(name, m.getValue().toString());
 	};
+	private Comparator<String> reverse = reverseOrder();
 	
 	@Inject
 	public MetricsService(MetricRepository repo) {
@@ -34,6 +38,7 @@ public class MetricsService {
 			.stream().filter(m-> {
 				return m.getName().matches("counter.status\\..*");
 			}).map(toMetric)
+			.sorted(comparing(m -> m.getValue(), reverse))
 		.collect(toList());
 		return new AsyncResult<>(metrics);
 	}
@@ -44,7 +49,9 @@ public class MetricsService {
 		 List<Metric> metrics = newArrayList(repo.findAll())
 				.stream().filter(m-> {
 					return m.getName().matches("gauge.response\\..*");
-				}).map(toMetric)
+				})
+				.map(toMetric)				
+				.sorted(comparing(m -> m.getValue(), reverse))
 			.collect(toList());
 		 return new AsyncResult<>(metrics);
 	}
