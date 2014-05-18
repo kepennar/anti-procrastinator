@@ -12,14 +12,14 @@ import com.mongodb.MongoClient
 import com.mongodb.WriteConcern
 
 
-def context = SpringApplication.run(Application.class, "-Pspring.profiles.active=test")
+def context = SpringApplication.run(Application.class, "--spring.profiles.active=test")
 
 Before() {
 	
 	// Mongo client
 	def mongo = new MongoClient()
 	mongo.writeConcern = WriteConcern.NORMAL
-	db = mongo.getDB("aproc")
+	db = mongo.getDB("test")
 	tasks = db.createCollection("task", new BasicDBObject())
 	client = new RESTClient("http://localhost:8088/api/tasks")
 

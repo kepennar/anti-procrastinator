@@ -18,9 +18,7 @@ import com.mongodb.Mongo
 @Configuration
 @EnableMongoAuditing(auditorAwareRef="auditorProvider")
 class MongoTestConfiguration extends AbstractMongoConfiguration {
-		String getDatabaseName() { 
-			'tests' 
-		}
+		String getDatabaseName() { 'test' 	}
 	
 		Mongo mongo() throws Exception { new Mongo() }
 		

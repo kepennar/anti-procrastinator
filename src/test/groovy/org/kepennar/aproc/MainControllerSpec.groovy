@@ -21,23 +21,15 @@ class MainControllerSpec extends Specification {
 	ConfigurableApplicationContext context
 
 	void setupSpec() {
-		Future future = Executors
-				.newSingleThreadExecutor().submit(
-				new Callable() {
-					@Override
-					public ConfigurableApplicationContext call() throws Exception {
-						return (ConfigurableApplicationContext) SpringApplication
-								.run(Application.class, "-Pspring.profiles.active=test")
-					}
-				})
-		context = future.get(60, TimeUnit.SECONDS)
+		
+		context = (ConfigurableApplicationContext) SpringApplication.run(Application.class, "--spring.profiles.active=test")
 	}
 
 	
 	void "should return HTTP status success"() {
 		when:
-			ResponseEntity entity = new RestTemplate().getForEntity("http://localhost:8088/site", String.class)
-
+			ResponseEntity e = new RestTemplate().getForEntity("http://localhost:8088/api/tasks/name/WriteTest", String.class)
+			
 		then:
 			entity.statusCode == HttpStatus.OK
 	}

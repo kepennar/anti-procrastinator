@@ -36,7 +36,7 @@ public class DevDatasLoader implements InitializingBean {
 		
 		List<Task> tasks = new ObjectMapper().readValue(sampleDatas, new TypeReference<List<Task>>(){});
 		taskRepository.save(tasks);
-		LOG.debug("{} sample tasks saved in DB", tasks.size());
+		LOG.info("{} sample tasks saved in DB", tasks.size());
 		
 	}
 }
