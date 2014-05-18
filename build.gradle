@@ -48,8 +48,10 @@ dependencies {
 	compile 'org.hibernate:hibernate-validator:5.1.1.Final'
 	compile 'com.google.guava:guava:17.0'
 
-    compile "org.webjars:jquery:2.1.0-2"
-    compile "org.webjars:bootstrap:3.1.1-1"
+    compile 'org.webjars:jquery:2.1.0-2'
+    compile 'org.webjars:bootstrap:3.1.1-1'
+	compile 'org.webjars:mustachejs:0.8.1'
+            
     
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'

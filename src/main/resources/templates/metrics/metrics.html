@@ -8,30 +8,48 @@
 <body>
 	<div layout:fragment="content" class="container">
 		<h2>Metrics</h2>
-		<div id="mem-pannel" class="panel panel-default">
-			<div class="panel-heading">Memory</div>
-	  		<div class="row panel-body">
-			  	<div class="col-md-10">
-					<canvas id="myChart" width="800" height="200"></canvas>
-				</div>
-				<div class="col-md-2">
-					<fieldset>
-						<legend>Legend</legend>
-						<p style="color:rgb(0, 255, 0);font-weight:bold">Memory: <span id="memValue" ></span> MB</p>
-						<p style="color:rgb(255, 0, 255);font-weight:bold">Memory used: <span id="memUsedValue" ></span> MB</p>
-					</fieldset>
+		<div id="health" class="row">
+			<div class="panel panel-default">
+				<div class="panel-heading">Health</div>
+				<div class="row panel-body" id="health-place">
 				</div>
 			</div>
 		</div>
-		
+		<div id="mem" class="row">
+			<div class="panel panel-default">
+				<div class="panel-heading">Memory</div>
+		  		<div class="row panel-body">
+				  	<div class="col-md-10">
+						<canvas id="myChart" width="800" height="200"></canvas>
+					</div>
+					<div class="col-md-2">
+						<fieldset>
+							<legend>Legend</legend>
+							<p style="font-weight:bold"><span style="color:rgb(0, 255, 0)">Memory: </span><span id="memValue" ></span> MB</p>
+							<p style="font-weight:bold"><span style="color:rgb(255, 0, 255);">Memory used: </span><span id="memUsedValue" ></span> MB</p>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="counters" class="row">	</div>
+		<div id="gauges" class="row">	</div>
+	</div>
+	<div layout:fragment="footer">
 		<script src="/js/smoothie.js" th:src="@{/js/smoothie.js}"></script>
+		<script src="/js/q.js" th:src="@{/js/q.js}"></script>
+		<script src="/js/handlebars.js" th:src="@{/js/handlebars.js}"></script>
+		
+		
+		
 		<script type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
-		(function() {
+		var MemMetrics = (function() {
+			var memMetrics = {};
             var apiUrl = /*[[@{/management/metrics/}]]*/;
             var memValue = document.getElementById("memValue");
             var memUsedValue = document.getElementById("memUsedValue");
-			var loadMetrics = function() {
+            memMetrics.loadMetrics = function() {
 				// Random data
 			      var line1 = new TimeSeries();
 			      var line2 = new TimeSeries();
@@ -50,13 +68,7 @@
 						  });
 						
 			      }, 1000);
-			      
-			      var myYRangeFunction = function(range) {
-			    	  var min = 0;
-			    	  var max = 1;
-			    	  return {min: min, max: max};
-			    	};
-			      
+			     
 			      var smoothie = new SmoothieChart({
 			    	  maxValue:100,
 			    	  minValue:0, 
@@ -75,9 +87,97 @@
 			      smoothie.streamTo(document.getElementById("myChart"), 1000);
 
 			};
-			loadMetrics();
-		})();
+			return memMetrics;
+		}());
 			
+		var CounterMetrics = (function() {
+			var counterMetrics = {};
+			var tplUrl = /*[[@{/partials/metrics.html}]]*/;
+			var apiUrl = /*[[@{/api/metrics/counters}]]*/;
+			var elem = document.getElementById("counters");
+			
+			counterMetrics.loadMetrics = function() {
+				var request = new XMLHttpRequest();
+		        var deferredTemplate = Q.defer();
+				var onLoadTemplate = function() {
+		            if (request.status === 200) {
+		                var template = Handlebars.compile(request.responseText);
+		                deferredTemplate.resolve(template);
+		            } else {
+		            	deferredTemplate.reject(new Error("Status code was " + request.status));
+		            }
+		        };
+		        request.open('GET', tplUrl, true);
+		        request.setRequestHeader('Accept','text/html');
+		        request.onload = onLoadTemplate;
+		        request.send();
+		        
+		        deferredTemplate.promise.then(function(template) {
+		        	setInterval(function() {
+						$.getJSON( apiUrl ).then(function(data) {
+							 elem.innerHTML = template({title: "Counters", unit:"nb",  metrics : data});
+						});
+		        	}, 2000);
+		        });
+			};
+			return counterMetrics;;
+		}());
+		var GaugeMetrics = (function() {
+			var gaugeMetrics = {};
+			var tplUrl = /*[[@{/partials/metrics.html}]]*/;
+			var apiUrl = /*[[@{/api/metrics/gauges}]]*/;
+			var elem = document.getElementById("gauges");
+			
+			gaugeMetrics.loadMetrics = function() {
+				var request = new XMLHttpRequest();
+		        var deferredTemplate = Q.defer();
+				var onLoadTemplate = function() {
+		            if (request.status === 200) {
+		                var template = Handlebars.compile(request.responseText);
+		                deferredTemplate.resolve(template);
+		            } else {
+		            	deferredTemplate.reject(new Error("Status code was " + request.status));
+		            }
+		        };
+		        request.open('GET', tplUrl, true);
+		        request.setRequestHeader('Accept','text/html');
+		        request.onload = onLoadTemplate;
+		        request.send();
+		        
+		        deferredTemplate.promise.then(function(template) {
+		        	setInterval(function() {
+						$.getJSON( apiUrl ).then(function(data) {
+							 elem.innerHTML = template({title: "Gauges", unit:"ms", metrics : data});
+						});
+		        	}, 2000);
+		        });
+			};
+			return gaugeMetrics;;
+		}());
+		
+		var Health = (function() {
+			var health = {};
+			var apiUrl = /*[[@{/management/health}]]*/;
+			var elem = document.getElementById("health-place");
+			health.loadHealth = function() {
+				setInterval(function() {
+					var request = new XMLHttpRequest();
+					request.open('GET', apiUrl, true);
+					request.onload = function() {
+						if (request.status === 200) {
+							elem.innerHTML = request.responseText;
+						}
+					};
+					request.send();
+				}, 2000);
+			};
+			return health;
+		}());
+		
+		MemMetrics.loadMetrics();
+		CounterMetrics.loadMetrics();
+		GaugeMetrics.loadMetrics();
+		Health.loadHealth();
 		/*]]>*/	
 		</script>
 	</div>
