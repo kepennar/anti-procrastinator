@@ -21,7 +21,7 @@ Before() {
 	mongo.writeConcern = WriteConcern.NORMAL
 	db = mongo.getDB("test")
 	tasks = db.createCollection("task", new BasicDBObject())
-	client = new RESTClient("http://localhost:8088/api/tasks")
+	client = new RESTClient("http://localhost:8888/api/tasks")
 
 }
 

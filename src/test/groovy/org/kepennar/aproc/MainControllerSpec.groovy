@@ -21,13 +21,13 @@ class MainControllerSpec extends Specification {
 	ConfigurableApplicationContext context
 
 	void setupSpec() {
-		context = (ConfigurableApplicationContext) SpringApplication.run(Application.class, "spring.profiles.active=test")
+		context = (ConfigurableApplicationContext) SpringApplication.run(Application.class, "--spring.profiles.active=test")
 	}
 
 	
 	void "should return HTTP status success"() {
 		when:
-			ResponseEntity entity = new RestTemplate().getForEntity("http://localhost:8088/site", String.class)
+			ResponseEntity entity = new RestTemplate().getForEntity("http://localhost:8888/site", String.class)
 			
 		then:
 			entity.statusCode == HttpStatus.OK
