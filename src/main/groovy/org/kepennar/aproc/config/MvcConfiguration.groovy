@@ -20,11 +20,10 @@ class MvcConfiguration extends WebMvcConfigurerAdapter {
 	@Override
 	void addInterceptors(InterceptorRegistry registry) {
 		log.info "Registering interceptor"
-		registry.addInterceptor(interceptor())
+		registry.addInterceptor(dateInterceptor())
 	}
 	
-	@Bean
-	HandlerInterceptor interceptor() {
+	HandlerInterceptor dateInterceptor() {
 		log.info "Creating interceptor"
 		[
 			postHandle: { request, response, handler, mav ->

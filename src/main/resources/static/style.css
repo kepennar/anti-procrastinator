@@ -38,6 +38,5 @@ code {
   font-size: 80%;
 }
 canvas { 
-  height: 100vh; 
-  width: 100vw; 
+  width: 50vw; 
 }
