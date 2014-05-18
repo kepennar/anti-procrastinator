@@ -4,7 +4,6 @@ import static java.util.Collections.reverseOrder;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -25,7 +24,6 @@ public class MetricsService {
 		String name = m.getName().substring(15);
 		return new Metric(name, m.getValue().longValue());
 	};
-	private Comparator<Long> reverse = reverseOrder();
 	
 	@Inject
 	public MetricsService(MetricRepository repo) {
@@ -34,25 +32,21 @@ public class MetricsService {
 	
 	@Async
 	public Future<List<Metric>> getCounters() {
-		List<Metric> metrics = newArrayList(repo.findAll())
-			.stream().filter(m-> {
-				return m.getName().matches("counter.status\\..*");
-			}).map(toMetric)
-			.sorted(comparing(m -> m.getValue(), reverse))
-		.collect(toList());
-		return new AsyncResult<>(metrics);
+		return new AsyncResult<>(getMetricsMatching("counter.status\\..*"));
 	}
 	
 	@Async
 	public Future<List<Metric>> getGauges() {
-		 		
-		 List<Metric> metrics = newArrayList(repo.findAll())
-				.stream().filter(m-> {
-					return m.getName().matches("gauge.response\\..*");
+		return new AsyncResult<>(getMetricsMatching("gauge.response\\..*"));
+	}
+	
+	private List<Metric> getMetricsMatching(String regex) {
+		return newArrayList(repo.findAll())
+				.stream().filter(m -> {
+					return m.getName().matches(regex);
 				})
 				.map(toMetric)				
-				.sorted(comparing(m -> m.getValue(), reverse))
+				.sorted(comparing(m -> m.getValue(), reverseOrder()))
 			.collect(toList());
-		 return new AsyncResult<>(metrics);
 	}
 }
