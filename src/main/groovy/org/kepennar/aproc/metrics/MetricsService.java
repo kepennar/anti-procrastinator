@@ -23,9 +23,9 @@ public class MetricsService {
 	
 	private Function<org.springframework.boot.actuate.metrics.Metric<?>, Metric> toMetric = m -> {
 		String name = m.getName().substring(15);
-		return new Metric(name, m.getValue().toString());
+		return new Metric(name, m.getValue().longValue());
 	};
-	private Comparator<String> reverse = reverseOrder();
+	private Comparator<Long> reverse = reverseOrder();
 	
 	@Inject
 	public MetricsService(MetricRepository repo) {
