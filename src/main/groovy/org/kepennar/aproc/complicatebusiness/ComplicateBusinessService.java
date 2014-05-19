@@ -26,12 +26,12 @@ public class ComplicateBusinessService {
 	public List<Task> getAllTransformedTasks() {
 		return taskRepository.findAll().parallelStream()
 			.map(t -> {
-				return new Task(sort2(t.getName()), sort2(t.getDescription()));
+				return new Task(sort(t.getName()), sort(t.getDescription()));
 			})
 			.collect(toList());
 		
 	}
-	private final static String sort2(String word) {
+	private final static String sort(String word) {
 		return Stream.of(word.split(""))
 				.sorted(naturalOrder())
 				.collect(joining());
