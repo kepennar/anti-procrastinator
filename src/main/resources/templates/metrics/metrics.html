@@ -36,9 +36,12 @@
 		<div id="gauges" class="row">	</div>
 	</div>
 	<div layout:fragment="footer">
-		<script src="/js/smoothie.js" th:src="@{/js/smoothie.js}"></script>
-		<script src="/js/q.js" th:src="@{/js/q.js}"></script>
-		<script src="/js/handlebars.js" th:src="@{/js/handlebars.js}"></script>
+		<script src="/js/libs/smoothie.js" th:src="@{/js/libs/smoothie.js}"></script>
+		<script src="/webjars/q/1.0.0/q.min.js" th:src="@{/webjars/q/1.0.0/q.min.js}"></script>
+		<script src="/webjars/handlebars/1.3.0/handlebars.min.js" th:src="@{/webjars/handlebars/1.3.0/handlebars.min.js}"></script>
+		<script src="/webjars/sockjs-client/0.3.4/sockjs.min.js" th:src="@{/webjars/sockjs-client/0.3.4/sockjs.min.js}"></script>
+		<script src="/webjars/stomp-websocket/2.3.1/stomp.min.js" th:src="@{/webjars/stomp-websocket/2.3.1/stomp.min.js}"></script>
+		<script src="/webjars/underscorejs/1.6.0/underscore-min.js" th:src="@{/webjars/underscorejs/1.6.0/underscore-min.js}"></script>
 		
 		
 		
@@ -89,71 +92,6 @@
 			};
 			return memMetrics;
 		}());
-			
-		var CounterMetrics = (function() {
-			var counterMetrics = {};
-			var tplUrl = /*[[@{/partials/metrics.html}]]*/;
-			var apiUrl = /*[[@{/api/metrics/counters}]]*/;
-			var elem = document.getElementById("counters");
-			
-			counterMetrics.loadMetrics = function() {
-				var request = new XMLHttpRequest();
-		        var deferredTemplate = Q.defer();
-				var onLoadTemplate = function() {
-		            if (request.status === 200) {
-		                var template = Handlebars.compile(request.responseText);
-		                deferredTemplate.resolve(template);
-		            } else {
-		            	deferredTemplate.reject(new Error("Status code was " + request.status));
-		            }
-		        };
-		        request.open('GET', tplUrl, true);
-		        request.setRequestHeader('Accept','text/html');
-		        request.onload = onLoadTemplate;
-		        request.send();
-		        
-		        deferredTemplate.promise.then(function(template) {
-		        	setInterval(function() {
-						$.getJSON( apiUrl ).then(function(data) {
-							 elem.innerHTML = template({title: "Counters", unit:"nb",  metrics : data});
-						});
-		        	}, 2000);
-		        });
-			};
-			return counterMetrics;;
-		}());
-		var GaugeMetrics = (function() {
-			var gaugeMetrics = {};
-			var tplUrl = /*[[@{/partials/metrics.html}]]*/;
-			var apiUrl = /*[[@{/api/metrics/gauges}]]*/;
-			var elem = document.getElementById("gauges");
-			
-			gaugeMetrics.loadMetrics = function() {
-				var request = new XMLHttpRequest();
-		        var deferredTemplate = Q.defer();
-				var onLoadTemplate = function() {
-		            if (request.status === 200) {
-		                var template = Handlebars.compile(request.responseText);
-		                deferredTemplate.resolve(template);
-		            } else {
-		            	deferredTemplate.reject(new Error("Status code was " + request.status));
-		            }
-		        };
-		        request.open('GET', tplUrl, true);
-		        request.setRequestHeader('Accept','text/html');
-		        request.onload = onLoadTemplate;
-		        request.send();
-		        
-		        deferredTemplate.promise.then(function(template) {
-		        	setInterval(function() {
-						$.getJSON( apiUrl ).then(function(data) {
-							 elem.innerHTML = template({title: "Gauges", unit:"ms", metrics : data});
-						});
-		        	}, 2000);
-		        });
-			};
-			return gaugeMetrics;;
-		}());
 		
 		var Health = (function() {
 			var health = {};
@@ -174,9 +112,51 @@
 			return health;
 		}());
 		
+		var MetricsWS = (function(elemId, WSUrl, options) {
+			
+			var stompClient = null;
+			var tplUrl = /*[[@{/partials/metrics.html}]]*/;
+	        var elem = document.getElementById(elemId);
+	        var template = null;
+	        
+			var connect = function() {
+	            var socket = new SockJS('/metrics');
+	            stompClient = Stomp.over(socket);            
+	            stompClient.connect({}, function(frame) {
+	                console.debug('Connected: ', frame);
+	                stompClient.subscribe(WSUrl, function(datas){
+	                	showMetrics(JSON.parse(datas.body));
+	                });
+	            });
+	        };
+	        var request = new XMLHttpRequest();
+	        var deferredTemplate = Q.defer();
+			var onLoadTemplate = function() {
+	            if (request.status === 200) {
+	                template = Handlebars.compile(request.responseText);
+	                deferredTemplate.resolve(template);
+	            } else {
+	            	deferredTemplate.reject(new Error("Status code was " + request.status));
+	            }
+	        };
+	        var showMetrics = function(metrics) {
+	        	elem.innerHTML = template(_.extend(options, {metrics : metrics}));
+	        }
+			
+	        request.open('GET', tplUrl, true);
+	        request.setRequestHeader('Accept','text/html');
+	        request.onload = onLoadTemplate;
+	        request.send();
+	        
+	        deferredTemplate.promise.then(function() {
+	        	connect();
+	        });
+	        
+	        
+		});	
 		MemMetrics.loadMetrics();
-		CounterMetrics.loadMetrics();
-		GaugeMetrics.loadMetrics();
+		MetricsWS('gauges', '/topic/gauges', {title: 'Gauges', unit: "ms"});
+		MetricsWS('counters', '/topic/counters', {title: 'Counters', unit: "nb"});
 		Health.loadHealth();
 		/*]]>*/	
 		</script>
