@@ -9,12 +9,14 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.0.M1'
+		classpath "net.saliman:gradle-cobertura-plugin:2.2.2"
     }
 }
 
 
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
+apply plugin: 'cobertura'
 apply plugin: 'eclipse'
 
 jar {
@@ -81,30 +83,49 @@ configurations {
 }
 
 sourceSets {
-	integrationTest {
-		groovy.srcDir 		file('src/it/groovy')
-		resources.srcDir	file('src/it/resources')
+	mockMvcTest {
+		groovy.srcDir 		file('src/mockMvcTest/groovy')
+		resources.srcDir	file('src/mockMvcTest/resources')
 		compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.intTestCompile
 		runtimeClasspath = output + compileClasspath + configurations.intTestRuntime
 	}
-    functionalTest {
-        groovy.srcDir 		file('src/testFunctional/groovy')
-        resources.srcDir	file('src/testFunctional/resources')
+	spockTest {
+		groovy.srcDir 		file('src/spockTest/groovy')
+		resources.srcDir	file('src/spockTest/resources')
+		compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.intTestCompile
+		runtimeClasspath = output + compileClasspath + configurations.intTestRuntime
+	}
+    cucumberTest {
+        groovy.srcDir 		file('src/cucumberTest/groovy')
+        resources.srcDir	file('src/cucumberTest/resources')
         compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.functTestCompile
         runtimeClasspath = output + compileClasspath + configurations.functTestRuntime
     }
 }
 
-task integrationTest(type: Test) {
-	testClassesDir = sourceSets.integrationTest.output.classesDir
-	classpath = sourceSets.integrationTest.runtimeClasspath
+task mockMvcTest(type: Test) {
+	testClassesDir = sourceSets.mockMvcTest.output.classesDir
+	classpath = sourceSets.mockMvcTest.runtimeClasspath
 }
 
-task functionalTest(type: Test) {
-    testClassesDir = sourceSets.functionalTest.output.classesDir
-    classpath = sourceSets.functionalTest.runtimeClasspath
+task spockTest(type: Test) {
+	testClassesDir = sourceSets.spockTest.output.classesDir
+	classpath = sourceSets.spockTest.runtimeClasspath
 }
 
+task cucumberTest(type: Test) {
+    testClassesDir = sourceSets.cucumberTest.output.classesDir
+    classpath = sourceSets.cucumberTest.runtimeClasspath
+}
+
+cobertura {
+	coverageTestTasks {
+		project.tasks.withType(Test)
+	}
+}
+
+
+check.dependsOn mockMvcTest, spockTest, cucumberTest
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
