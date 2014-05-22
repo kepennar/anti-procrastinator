@@ -22,9 +22,6 @@ or
 ### Run all tests
 `gradle check`
 
-### Run all tests
-`gradle check`
-
 ### Run tests code coverage
 `gradle cobertura`
 
