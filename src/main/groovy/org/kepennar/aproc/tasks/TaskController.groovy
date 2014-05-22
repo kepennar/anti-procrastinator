@@ -6,6 +6,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET
 
 import javax.inject.Inject
 
+import org.kepennar.aproc.thymeleaf.components.PageWrapper
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,10 +23,12 @@ class TaskController {
 	}
 	
     @RequestMapping(method = GET)
-    String list(Model model) {
-		
+    String list(Model model, Pageable pageable) {
 		model.addAttribute("currentMenu", "tasks");
-		model.addAttribute("tasks", repo.findAll());
+		
+		PageWrapper<Task> page = new PageWrapper<>(repo.findAll(pageable), 'tasks');
+		model.addAttribute("page", page);
+		
 		return "/tasks/tasksList";
     }
 

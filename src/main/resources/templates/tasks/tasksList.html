@@ -21,7 +21,7 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-		            <tr th:each="task : ${tasks}">
+		            <tr th:each="task : ${page.content}">
 		                <td>
 		                    <a href="taskDetails.html"
 		                       th:href="@{|/tasks/${task.id}|}"
@@ -34,6 +34,7 @@
 		            </tr>
 		        </tbody>
 		    </table>
+		    <div th:include="fragments/pagination-bar :: paginationbar"></div>
 		</div>		
 	</body>
 
