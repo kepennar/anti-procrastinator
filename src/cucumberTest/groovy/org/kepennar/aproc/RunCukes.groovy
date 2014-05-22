@@ -6,10 +6,10 @@ import cucumber.api.junit.Cucumber
 
 @RunWith(Cucumber)
 @cucumber.api.CucumberOptions(
-    format=["pretty", "html:build/reports/cucumber"],
+    format=["pretty", "html:build/reports/cucumberTest/cucumber"],
     strict=true,
-    features=["src/testFunctional/cucumber"],
-    glue=["src/testFunctional/groovy/org/kepennar/aproc/steps"],
+    features=["src/cucumberTest/cucumber"],
+    glue=["src/cucumberTest/groovy/org/kepennar/aproc/steps"],
     tags = ["~@ignore"]
 )
 class RunCukes {}

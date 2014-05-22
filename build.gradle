@@ -9,12 +9,14 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.0.M1'
+		classpath "net.saliman:gradle-cobertura-plugin:2.2.2"
     }
 }
 
 
 apply plugin: 'groovy'
 apply plugin: 'spring-boot'
+apply plugin: 'cobertura'
 apply plugin: 'eclipse'
 
 jar {
@@ -67,37 +69,88 @@ dependencies {
 	testCompile 'org.assertj:assertj-core:1.6.0'
     testCompile 'com.github.groovy-wslite:groovy-wslite:0.8.0'
     testCompile 'org.mongodb:mongo-java-driver:2.12.0'
+	testCompile 'org.jsoup:jsoup:1.7.2'
 }
 
 test.testLogging.exceptionFormat = 'full'
 
 configurations {
-    functTestCompile.extendsFrom testCompile
-    functTestRuntime.extendsFrom testRuntime
+
+	// replaced with jcl-over-slf4j
+	all*.exclude group: 'commons-logging', module: 'commons-logging'
+	// replaced with log4j-over-slf4j
+	all*.exclude group: 'log4j', module: 'log4j'
+
+	mockMvcTestCompile.extendsFrom testCompile
+	mockMvcTestRuntime.extendsFrom testRuntime
+
+	spockTestCompile.extendsFrom testCompile
+	spockTestRuntime.extendsFrom testRuntime
+
+	cucumberTestCompile.extendsFrom testCompile
+	cucumberTestRuntime.extendsFrom testRuntime
+
 }
 
 sourceSets {
-    functionalTest {
-        groovy.srcDir file('src/testFunctional/groovy')
-        resources.srcDir     file('src/testFunctional/resources')
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.functTestCompile
-        runtimeClasspath = output + compileClasspath + configurations.functTestRuntime
+	mockMvcTest {
+		groovy.srcDir 		'src/mockMvcTest/groovy'
+		resources.srcDir	'src/mockMvcTest/resources'
+		compileClasspath =	sourceSets.main.output + sourceSets.test.output + configurations.mockMvcTestCompile
+		runtimeClasspath =	output + compileClasspath + configurations.mockMvcTestRuntime
+	}
+	spockTest {
+		groovy.srcDir		'src/spockTest/groovy'
+		resources.srcDir	'src/spockTest/resources'
+		compileClasspath =	sourceSets.main.output + sourceSets.test.output + configurations.spockTestCompile
+		runtimeClasspath =	output + compileClasspath + configurations.spockTestRuntime
+	}
+    cucumberTest {
+        groovy.srcDir		'src/cucumberTest/groovy'
+        resources.srcDir	'src/cucumberTest/resources'
+        compileClasspath =	sourceSets.main.output + sourceSets.test.output + configurations.cucumberTestCompile
+        runtimeClasspath =	output + compileClasspath + configurations.cucumberTestRuntime
     }
 }
 
+task mockMvcTest(type: Test) {
+	testClassesDir = sourceSets.mockMvcTest.output.classesDir
+	classpath = sourceSets.mockMvcTest.runtimeClasspath
 
-task startServer(type:Exec, dependsOn: 'assemble') {
-    //commandLine "java -jar ${projectDir}/build/libs/${jar.baseName}-${jar.version}.jar"
-    //bootRun.execute()
+	// ensure we don't overwrite default report directories used by 'test' task
+    reports.html.destination = "${project.buildDir}/reports/mockMvcTest"
+    reports.junitXml.destination = "${project.buildDir}/mockMvcTest-results"
+    binResultsDir = file("${project.buildDir}/integTest-results/binary/mockMvcTest")
 }
 
-task functionalTest(type: Test) {
-    testClassesDir = sourceSets.functionalTest.output.classesDir
-    classpath = sourceSets.functionalTest.runtimeClasspath
-    //dependsOn startServer
-    //finalizedBy stopMongoDb
+task spockTest(type: Test) {
+	testClassesDir = sourceSets.spockTest.output.classesDir
+	classpath = sourceSets.spockTest.runtimeClasspath
+
+	// ensure we don't overwrite default report directories used by 'test' task
+    reports.html.destination = "${project.buildDir}/reports/spockTest"
+    reports.junitXml.destination = "${project.buildDir}/spockTest-results"
+    binResultsDir = file("${project.buildDir}/integTest-results/binary/spockTest")
 }
 
+task cucumberTest(type: Test) {
+    testClassesDir = sourceSets.cucumberTest.output.classesDir
+    classpath = sourceSets.cucumberTest.runtimeClasspath
+        
+	// ensure we don't overwrite default report directories used by 'test' task
+    reports.html.destination = "${project.buildDir}/reports/cucumberTest"
+    reports.junitXml.destination = "${project.buildDir}/cucumberTest-results"
+    binResultsDir = file("${project.buildDir}/integTest-results/binary/cucumberTest")
+}
+
+cobertura {
+	coverageTestTasks {
+		project.tasks.withType(Test)
+	}
+}
+
+
+check.dependsOn project.tasks.withType(Test)
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'

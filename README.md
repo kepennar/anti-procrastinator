@@ -10,8 +10,19 @@ or
 `gradle bootRun -Pprofile=my_profile --daemon`
 
 
-###Run unit tests
-`gradle test`
+### Run tests with Spring MockMVC
+`gradle mockMvcTest`
 
-###Run functional tests
-`gradle clean functionalTest`
+### Run tests with Spock
+`gradle spockTest`
+
+### Run tests with Cucumber
+`gradle cucumberTest`
+
+### Run all tests
+`gradle check`
+
+### Run tests code coverage
+`gradle cobertura`
+
+
