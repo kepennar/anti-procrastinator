@@ -75,47 +75,72 @@ dependencies {
 test.testLogging.exceptionFormat = 'full'
 
 configurations {
-	intTestCompile.extendsFrom testCompile
-	intTestRuntime.extendsFrom testRuntime
-	
-    functTestCompile.extendsFrom testCompile
-    functTestRuntime.extendsFrom testRuntime
+
+	// replaced with jcl-over-slf4j
+	all*.exclude group: 'commons-logging', module: 'commons-logging'
+	// replaced with log4j-over-slf4j
+	all*.exclude group: 'log4j', module: 'log4j'
+
+	mockMvcTestCompile.extendsFrom testCompile
+	mockMvcTestRuntime.extendsFrom testRuntime
+
+	spockTestCompile.extendsFrom testCompile
+	spockTestRuntime.extendsFrom testRuntime
+
+	cucumberTestCompile.extendsFrom testCompile
+	cucumberTestRuntime.extendsFrom testRuntime
+
 }
 
 sourceSets {
 	mockMvcTest {
-		groovy.srcDir 		file('src/mockMvcTest/groovy')
-		resources.srcDir	file('src/mockMvcTest/resources')
-		compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.intTestCompile
-		runtimeClasspath = output + compileClasspath + configurations.intTestRuntime
+		groovy.srcDir 		'src/mockMvcTest/groovy'
+		resources.srcDir	'src/mockMvcTest/resources'
+		compileClasspath =	sourceSets.main.output + sourceSets.test.output + configurations.mockMvcTestCompile
+		runtimeClasspath =	output + compileClasspath + configurations.mockMvcTestRuntime
 	}
 	spockTest {
-		groovy.srcDir 		file('src/spockTest/groovy')
-		resources.srcDir	file('src/spockTest/resources')
-		compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.intTestCompile
-		runtimeClasspath = output + compileClasspath + configurations.intTestRuntime
+		groovy.srcDir		'src/spockTest/groovy'
+		resources.srcDir	'src/spockTest/resources'
+		compileClasspath =	sourceSets.main.output + sourceSets.test.output + configurations.spockTestCompile
+		runtimeClasspath =	output + compileClasspath + configurations.spockTestRuntime
 	}
     cucumberTest {
-        groovy.srcDir 		file('src/cucumberTest/groovy')
-        resources.srcDir	file('src/cucumberTest/resources')
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.functTestCompile
-        runtimeClasspath = output + compileClasspath + configurations.functTestRuntime
+        groovy.srcDir		'src/cucumberTest/groovy'
+        resources.srcDir	'src/cucumberTest/resources'
+        compileClasspath =	sourceSets.main.output + sourceSets.test.output + configurations.cucumberTestCompile
+        runtimeClasspath =	output + compileClasspath + configurations.cucumberTestRuntime
     }
 }
 
 task mockMvcTest(type: Test) {
 	testClassesDir = sourceSets.mockMvcTest.output.classesDir
 	classpath = sourceSets.mockMvcTest.runtimeClasspath
+
+	// ensure we don't overwrite default report directories used by 'test' task
+    reports.html.destination = "${project.buildDir}/reports/mockMvcTest"
+    reports.junitXml.destination = "${project.buildDir}/mockMvcTest-results"
+    binResultsDir = file("${project.buildDir}/integTest-results/binary/mockMvcTest")
 }
 
 task spockTest(type: Test) {
 	testClassesDir = sourceSets.spockTest.output.classesDir
 	classpath = sourceSets.spockTest.runtimeClasspath
+
+	// ensure we don't overwrite default report directories used by 'test' task
+    reports.html.destination = "${project.buildDir}/reports/spockTest"
+    reports.junitXml.destination = "${project.buildDir}/spockTest-results"
+    binResultsDir = file("${project.buildDir}/integTest-results/binary/spockTest")
 }
 
 task cucumberTest(type: Test) {
     testClassesDir = sourceSets.cucumberTest.output.classesDir
     classpath = sourceSets.cucumberTest.runtimeClasspath
+        
+	// ensure we don't overwrite default report directories used by 'test' task
+    reports.html.destination = "${project.buildDir}/reports/cucumberTest"
+    reports.junitXml.destination = "${project.buildDir}/cucumberTest-results"
+    binResultsDir = file("${project.buildDir}/integTest-results/binary/cucumberTest")
 }
 
 cobertura {
