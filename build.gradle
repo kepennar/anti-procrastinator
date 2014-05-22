@@ -150,7 +150,7 @@ cobertura {
 }
 
 
-check.dependsOn mockMvcTest, spockTest, cucumberTest
+check.dependsOn project.tasks.withType(Test)
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
