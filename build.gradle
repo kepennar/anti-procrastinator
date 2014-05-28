@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.0.M1'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.0.M2'
 		classpath "net.saliman:gradle-cobertura-plugin:2.2.2"
     }
 }
