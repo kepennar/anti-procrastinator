@@ -23,8 +23,7 @@ class RestTaskController {
 	
     @RequestMapping(method=GET, value="name/{name}")
     ResponseEntity byName(@PathVariable String name) {
-		
-		return Optional.ofNullable(this.repo.findByName(name))
+		return Optional.ofNullable(repo.findByName(name))
 			.map({t -> new ResponseEntity<>(t, OK)})
 			.orElse(new ResponseEntity<>(NOT_FOUND));
     }
@@ -32,8 +31,7 @@ class RestTaskController {
 	
 	@RequestMapping(method=GET, value="{id}")
 	ResponseEntity task(@PathVariable String id) {
-
-		return Optional.ofNullable(this.repo.findOne(id))
+		return Optional.ofNullable(repo.findOne(id))
 			.map({t -> new ResponseEntity<>(t, OK)})
 			.orElse(new ResponseEntity<>(NOT_FOUND));
 	}
@@ -42,11 +40,11 @@ class RestTaskController {
 	@RequestMapping(method=GET, value="{id}/majVersion")
 	ResponseEntity majVersion(@PathVariable String id) {
 		
-		Task task = repo.findOne(id);
-		repo.save(task);
-			
-		return Optional.ofNullable(task)
-			.map({t -> new ResponseEntity<>(t, OK)})
+		Optional.ofNullable(repo.findOne(id))
+			.map({t -> 
+				repo.save(t);
+				new ResponseEntity<>(t, OK)
+			})
 			.orElse(new ResponseEntity<>(NOT_FOUND));
 	}
 }

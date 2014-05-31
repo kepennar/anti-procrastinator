@@ -21,10 +21,12 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-		            <tr th:each="task : ${tasks}">
+		            <tr th:each="task : ${page.content}">
 		                <td>
-		                    <a href="taskDetails.html"
+		                    <a href="#"
 		                       th:href="@{|/tasks/${task.id}|}"
+		                       class="task-detail" 
+		                       data-th-attr="data-taskid=${task.id}"
 		                       th:text="|${task.name}|"></a>
 		                </td>
 		                <td th:text="${task.description}">Description</td>
@@ -34,7 +36,15 @@
 		            </tr>
 		        </tbody>
 		    </table>
-		</div>		
-	</body>
+		    <div th:include="fragments/pagination-bar :: paginationbar" class="text-center"></div>
+		</div>
+		<script type="text/javascript" th:inline="javascript">
+			/*<![CDATA[*/
+			(function() {
 
+			}());
+			/*]]>*/	
+		</script>
+
+	</body>
 </html>
