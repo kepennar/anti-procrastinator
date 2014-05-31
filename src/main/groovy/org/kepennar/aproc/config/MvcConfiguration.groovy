@@ -42,13 +42,14 @@ class MvcConfiguration extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-		resolver.setFallbackPageable(new PageRequest(0, PageWrapper.MAX_PAGE_ITEM_DISPLAY));
-		argumentResolvers.add(resolver);
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver()
+		resolver.setFallbackPageable(new PageRequest(0, PageWrapper.MAX_PAGE_ITEM_DISPLAY))
+		resolver.setOneIndexedParameters(true)
+		argumentResolvers.add(resolver)
 	}
 	
 	
 	@Bean Module jodaModule() {
-		return new JodaModule();
+		return new JodaModule()
 	}
 }
