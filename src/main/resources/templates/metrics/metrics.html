@@ -46,31 +46,30 @@
 		
 		
 		<script type="text/javascript" th:inline="javascript">
+		var errorCallback = function(e) {
+			console.error(e);
+		};
 		/*<![CDATA[*/
 		var MemMetrics = (function() {
-			var memMetrics = {};
-            var apiUrl = /*[[@{/management/metrics/}]]*/;
-            var memValue = document.getElementById("memValue");
-            var memUsedValue = document.getElementById("memUsedValue");
+			var memMetrics = {},
+            apiUrl = /*[[@{/management/metrics/}]]*/,
+            memValue = document.getElementById("memValue"),
+            memUsedValue = document.getElementById("memUsedValue"),
+            line1 = new TimeSeries(),
+	    	line2 = new TimeSeries();
+
+
             memMetrics.loadMetrics = function() {
-				// Random data
-			      var line1 = new TimeSeries();
-			      var line2 = new TimeSeries();
-			      setInterval(function() {
-						$.get( apiUrl + 'mem')
-							.done(function(data) {
-								var mem = data/ 1024;
-								memValue.innerHTML = Math.round(mem);
-								line1.append(new Date().getTime(), mem);
-								$.get(apiUrl + 'mem.free')
-								.done(function(data) {
-									var memUsed = mem - (data / 1024);
-									memUsedValue.innerHTML = Math.round(memUsed);
-									line2.append(new Date().getTime(), memUsed);
-							  });
-						  });
-						
-			      }, 1000);
+			      	setInterval(function() {
+						$$.get(
+							{
+								url: apiUrl + 'mem',
+								success: getMemCallBack,
+								fail: errorCallback,
+								contentType: 'application/json'
+							}
+						);
+					}, 1000);
 			     
 			      var smoothie = new SmoothieChart({
 			    	  maxValue:200,
@@ -90,6 +89,27 @@
 			      smoothie.streamTo(document.getElementById("myChart"), 1000);
 
 			};
+			var getMemCallBack = function(data, next) {
+				var mem = data/ 1024;
+				memValue.innerHTML = Math.round(mem);
+				line1.append(new Date().getTime(), mem);
+				$$.get(
+					{
+						url: apiUrl + 'mem.free',
+						success: getMemFreeCallback,
+						error: errorCallback,
+						contentType: 'application/json'
+					},
+					mem);
+
+			};
+			var getMemFreeCallback = function(data, mem) {
+				var memUsed = mem - (data / 1024);
+				memUsedValue.innerHTML = Math.round(memUsed);
+				line2.append(new Date().getTime(), memUsed);
+
+			};
+
 			return memMetrics;
 		}());
 		
@@ -97,17 +117,23 @@
 			var health = {};
 			var apiUrl = /*[[@{/management/health}]]*/;
 			var elem = document.getElementById("health-place");
+			var showHealth = function() {
+				$$.get(
+					{
+						url: apiUrl,
+						success: function() {
+							if (request.status === 200) {
+								elem.innerHTML = request.responseText;
+							}
+						},
+						fail: errorCallback,
+						contentType: 'application/json'
+					}
+				);
+			};
+
 			health.loadHealth = function() {
-				setInterval(function() {
-					var request = new XMLHttpRequest();
-					request.open('GET', apiUrl, true);
-					request.onload = function() {
-						if (request.status === 200) {
-							elem.innerHTML = request.responseText;
-						}
-					};
-					request.send();
-				}, 2000);
+				setInterval(showHealth, 2000);
 			};
 			return health;
 		}());
@@ -129,7 +155,6 @@
 	                });
 	            });
 	        };
-	        var request = new XMLHttpRequest();
 	        var deferredTemplate = Q.defer();
 			var onLoadTemplate = function() {
 	            if (request.status === 200) {
@@ -142,12 +167,14 @@
 	        var showMetrics = function(metrics) {
 	        	elem.innerHTML = template(_.extend(options, {metrics : metrics}));
 	        }
-			
-	        request.open('GET', tplUrl, true);
-	        request.setRequestHeader('Accept','text/html');
-	        request.onload = onLoadTemplate;
-	        request.send();
-	        
+			$$.get(
+				{
+					url: tplUrl, 
+					success: onLoadTemplate, 
+					error: errorCallback,
+					contentType: 'text/html'
+				}
+			);
 	        deferredTemplate.promise.then(function() {
 	        	connect();
 	        });
