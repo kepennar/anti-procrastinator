@@ -1,26 +1,26 @@
-package org.kepennar.aproc
+package org.kepennar.aproc;
 
-import org.kepennar.aproc.config.Constants
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.core.env.SimpleCommandLinePropertySource
-import org.springframework.scheduling.annotation.EnableAsync
-import org.springframework.scheduling.annotation.EnableScheduling
+import org.kepennar.aproc.config.Constants;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.SimpleCommandLinePropertySource;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableAutoConfiguration
 @EnableAsync
 @EnableScheduling
 @ComponentScan("org.kepennar.aproc")
-class Application {
-	static void main(String[] args){
-		SpringApplication app = new SpringApplication(Application);
+public class Application {
+	public static void main(String[] args){
+		SpringApplication app = new SpringApplication(Application.class);
 		SimpleCommandLinePropertySource source = new SimpleCommandLinePropertySource(args);
 
 		// Check if the selected profile has been set as argument.
 		// if not the development profile will be added
 		addDefaultProfile(app, source);
-		app.run(args)
+		app.run(args);
 	}
 
 	/**
