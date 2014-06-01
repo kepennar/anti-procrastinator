@@ -6,6 +6,7 @@ import org.kepennar.aproc.thymeleaf.components.PageWrapper;
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.HandlerInterceptor

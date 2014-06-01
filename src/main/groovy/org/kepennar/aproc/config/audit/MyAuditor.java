@@ -12,5 +12,8 @@ public class MyAuditor implements AuditorAware<AuditableUser> {
 	public AuditableUser getCurrentAuditor() {
 		return user;
 	}
+	public void setUser(String name) {
+		this.user = new AuditableUser(name);
+	}
 
 }

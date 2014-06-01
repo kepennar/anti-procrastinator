@@ -11,16 +11,17 @@ class PageWrapper<T> {
 		boolean current
 	}
 
-	public static final int MAX_PAGE_ITEM_DISPLAY = 10
+	public static final int MAX_PAGE_ITEM_DISPLAY = 5
 	Page<T> page
 	List<PageItem> items = []
 	int number
 	String url
+	String sortFieldName
 
-	PageWrapper(Page<T> page, String url) {
+	PageWrapper(Page<T> page, String url, String sortFieldName) {
 		this.page = page
 		this.url = url
-
+		this.sortFieldName = sortFieldName
 		number = page.getNumber()
 
 		int start, size

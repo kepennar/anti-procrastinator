@@ -24,7 +24,6 @@
 		            <tr th:each="task : ${page.content}">
 		                <td>
 		                    <a href="#"
-		                       th:href="@{|/tasks/${task.id}|}"
 		                       class="task-detail" 
 		                       data-th-attr="data-taskid=${task.id}"
 		                       th:text="|${task.name}|"></a>
@@ -37,14 +36,66 @@
 		        </tbody>
 		    </table>
 		    <div th:include="fragments/pagination-bar :: paginationbar" class="text-center"></div>
-		</div>
-		<script type="text/javascript" th:inline="javascript">
-			/*<![CDATA[*/
-			(function() {
 
-			}());
-			/*]]>*/	
-		</script>
+		    <div class="modal fade" id="taskDetailModel" tabindex="-1" role="dialog" aria-labelledby="taskDetailLabel" aria-hidden="true">
+  				
+  			</div>
+		</div>
+		<div layout:fragment="footer">
+			<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js" th:src="@{/webjars/jquery/2.1.0/jquery.min.js}"></script>
+			<script src="/webjars/bootstrap/3.1.1-1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.1.1/js/bootstrap.min.js}"></script>
+			<script type="text/javascript" th:inline="javascript">
+				/*<![CDATA[*/
+				(function() {
+					var errorCallback = function(e) {
+						console.error(e);
+					},
+					tasksUrl = /*[[@{/site/tasks/}]]*/;
+					tasksApiUrl = /*[[@{/api/tasks/}]]*/;
+
+
+					var loadDetails = function(id) {
+						$$.get(
+							{
+								url: tasksUrl + id,
+								success: showDetails,
+								fail: errorCallback,
+								contentType: 'text/html'
+							}
+						);
+					}
+					var showDetails = function(details) {
+						$$.selector('#taskDetailModel').result.innerHTML = details;
+						$('#taskDetailModel').modal('toggle');
+						var btn = $$.selector('.task-touch').result;
+						btn.addEventListener('click', function() {
+							var id = btn.dataset.taskid;
+							$$.get(
+								{
+									url: tasksApiUrl + id + '/majVersion',
+									success: function() {
+										window.location.reload();
+									},
+									fail: errorCallback,
+									contentType: 'application/json'
+								}
+							);
+						});
+					};
+
+
+					forEach.call($$.selector('.task-detail').results, function(task) {
+						var id = task.dataset.taskid;
+						task.addEventListener("click", function() {
+							loadDetails(id);
+						});
+					});
+
+				}());
+				/*]]>*/	
+			</script>
+		</div>
 
 	</body>
-</html>
+</html>    
+

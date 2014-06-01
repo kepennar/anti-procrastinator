@@ -23,7 +23,7 @@
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
 					<li th:class="${currentMenu == ''} ? 'active'" ><a href="/site" th:href="@{/site}">Home</a></li>
-					<li th:class="${currentMenu == 'tasks'} ? 'active'" ><a href="/site/tasks" th:href="@{/site/tasks}">Tasks</a></li>
+					<li th:class="${currentMenu == 'tasks'} ? 'active'" ><a href="/site/tasks" th:href="@{/site/tasks(sort=name)}">Tasks</a></li>
 					<li th:class="${currentMenu == 'metrics'} ? 'active'" ><a href="/site/metrics" th:href="@{/site/metrics}">Metrics</a></li>
 				</ul>
 			</div>

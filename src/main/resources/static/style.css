@@ -37,3 +37,13 @@ body > .container {
 code {
   font-size: 80%;
 }
+
+
+/*  *** Modal     ***  */
+.modal-header {
+    color: #DDD;
+    background-color: #333;
+}
+.modal-footer {
+    background-color: #EFEFEF;
+}
