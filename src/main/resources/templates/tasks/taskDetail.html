@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 
 <html lang="en"
-xmlns:th="http://www.thymeleaf.org">
+xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
 <div layout:fragment="content">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -12,14 +13,14 @@ xmlns:th="http://www.thymeleaf.org">
 			</div>
 			<div class="modal-body">
 				<ul class="list-group">
-					<li class="list-group-item" th:text="${task.name}"></li>
-					<li class="list-group-item" th:text="${task.description}"></li>
+					<li class="list-group-item" th:text="${task.name}">Nom</li>
+					<li class="list-group-item" th:text="${task.description}">Description</li>
 				</ul>
 			</div>
 			<div class="modal-footer">
 			<small class="text-muted pull-left">
-					Created the <span th:text="${#calendars.format(task.createdAt)}"></span> by <span th:text="${task.createdBy.name}"></span> <br></br>
-					Last modified the <span th:text="${#calendars.format(task.lastModified)}"></span> by <span th:text="${task.lastModifiedBy.name}"></span>
+					Created the <span th:text="${#calendars.format(task.createdAt)}">01/01/2001</span> by <span th:text="${task.createdBy.name}">TestUser</span> <br></br>
+					Last modified the <span th:text="${#calendars.format(task.lastModified)}">02/01/2001</span> by <span th:text="${task.lastModifiedBy.name}">TestUser</span>
 				</small>
 				<button type="button" class="btn btn-default task-touch" data-th-attr="data-taskid=${task.id}">Touch</button>
 			</div>

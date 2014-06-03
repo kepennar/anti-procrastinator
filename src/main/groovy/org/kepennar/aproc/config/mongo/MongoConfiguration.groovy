@@ -18,15 +18,13 @@ import com.mongodb.Mongo
 @Configuration
 @EnableMongoAuditing(auditorAwareRef="auditorProvider")
 class MongoConfiguration extends AbstractMongoConfiguration {
-		String getDatabaseName() { 
-			'aproc' 
-		}
+		String getDatabaseName() { 'aproc' }
 	
 		Mongo mongo() throws Exception { new Mongo() }
 		
 		String getMappingBasePackage() { 'org.kepennar.aproc' }
 		
-		@Bean AuditorAware<AuditableUser> auditorProvider() { new MyAuditor("Application"); }
+		@Bean AuditorAware<AuditableUser> auditorProvider() { new MyAuditor("Application") }
 	    
 }
 

@@ -20,23 +20,24 @@ public class ComplicateBusinessServiceSpec extends Specification {
 	]
 	
 	@Shared
-	List<Task> tasks2 =
-	[
-		new Task(name:"aeaeae", description:"babae"),
-		new Task(name:"efefef", description:"uiuiu")
-	]
-	
-	@Shared
 	List<Task> transformedTasks1 =
 	[
 		new Task(name:"xyz", description:"abc"),
 		new Task(name:"lmo", description:"def")
 	]
 	
+	
+	@Shared
+	List<Task> tasks2 =
+	[
+		new Task(name:"aeaeae", description:"babae"),
+		new Task(name:"efefef", description:"uiuiu")
+	]
+		
 	@Shared
 	List<Task> transformedTasks2 =
 	[
-		new Task(name:"aaaeee", description:"aabbe"),
+		new Task(name:"aaaeee", description:"dedebe"),
 		new Task(name:"eeefff", description:"iiuuu")
 	]	
 	

@@ -1,7 +1,5 @@
 package org.kepennar.aproc.tasks;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND
-import static org.springframework.http.HttpStatus.OK
 import static org.springframework.web.bind.annotation.RequestMethod.GET
 
 import javax.inject.Inject

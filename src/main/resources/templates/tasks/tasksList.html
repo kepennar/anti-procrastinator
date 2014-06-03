@@ -17,7 +17,7 @@
 		                <th>description</th>
 		                <th>Version</th>
 		                <th>Dernière modification</th>
-		                <th >Dernière modification par</th>
+		                <th>Dernière modification par</th>
 		            </tr>
 		        </thead>
 		        <tbody>
@@ -26,12 +26,12 @@
 		                    <a href="#"
 		                       class="task-detail" 
 		                       data-th-attr="data-taskid=${task.id}"
-		                       th:text="|${task.name}|"></a>
+		                       th:text="|${task.name}|">Nom</a>
 		                </td>
 		                <td th:text="${task.description}">Description</td>
 		                <td th:text="${task.version}">0</td>
-		                <td th:text="${#calendars.format(task.lastModified)}"></td>
-		                <td th:text="${task.lastModifiedBy.name}"></td>
+		                <td th:text="${#calendars.format(task.lastModified)}">01/01/2001</td>
+		                <td th:text="${task.lastModifiedBy.name}">TestUser</td>
 		            </tr>
 		        </tbody>
 		    </table>
